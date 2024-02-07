@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Module for handling Personal Data
+Module for storing the filtered_logger function.
 """
 from typing import List
 import re
 import logging
-from os import environ
+import os
 import mysql.connector
 
 
@@ -15,14 +15,19 @@ PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 def filter_datum(
     fields: List[str], redaction: str, message: str, separator: str
 ) -> str:
-    """Returns a log message obfuscated"""
+    """Returns a log message with PII redacted."""
     for f in fields:
-        message = re.sub(f"{f}=.*?{separator}", f"{f}={redaction}{separator}", message)
+        message = re.sub(
+            f"{f}=.*?{separator}",
+            f"{f}={redaction}{separator}",
+            message
+        )
     return message
 
 
 def get_logger() -> logging.Logger:
-    """Returns a Logger Object"""
+    """Returns a logging object that can be used
+    to log all PII fields in a message."""
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
     logger.propagate = False
@@ -35,22 +40,23 @@ def get_logger() -> logging.Logger:
 
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
-    """Returns a connector to a MySQL database"""
-    username = environ.get("PERSONAL_DATA_DB_USERNAME", "root")
-    password = environ.get("PERSONAL_DATA_DB_PASSWORD", "")
-    host = environ.get("PERSONAL_DATA_DB_HOST", "localhost")
-    db_name = environ.get("PERSONAL_DATA_DB_NAME")
+    """Returns a connector to a database connection object."""
+    username = os.environ.get("PERSONAL_DATA_DB_USERNAME", "root")
+    password = os.environ.get("PERSONAL_DATA_DB_PASSWORD", "")
+    host = os.environ.get("PERSONAL_DATA_DB_HOST", "localhost")
+    db_name = os.environ.get("PERSONAL_DATA_DB_NAME")
 
-    cnx = mysql.connector.connection.MySQLConnection(
+    p = mysql.connector.connection.MySQLConnection(
         user=username, password=password, host=host, database=db_name
     )
-    return cnx
+    return p
 
 
 def main():
     """
-    Obtain a database connection using get_db and retrieves all rows
-    in the users table and display each row under a filtered format
+    Main function
+
+    Logs PII fields from a database
     """
     db = get_db()
     cursor = db.cursor()
