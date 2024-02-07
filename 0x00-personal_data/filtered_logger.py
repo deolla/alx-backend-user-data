@@ -43,14 +43,18 @@ PII_FIELDS = ("username", "email", "password", "credit_card", "ssn")
 
 
 def get_logger() -> logging.Logger:
-    """Return a logging object."""
+    """Return a logging.Logger object named 'user_data'."""
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
-    logger.propagate = False
+
+    # Create a StreamHandler
     stream_handler = logging.StreamHandler()
-    formatter = RedactingFormatter(PII_FIELDS)
+    formatter = RedactingFormatter(fields=PII_FIELDS)
     stream_handler.setFormatter(formatter)
+
+    # Add the StreamHandler to the logger
     logger.addHandler(stream_handler)
+    logger.propagate = False
     return logger
 
 
