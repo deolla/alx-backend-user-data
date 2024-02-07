@@ -19,6 +19,23 @@ def filter_datum(
     return message
 
 
+PII_FIELDS = ("username", "email", "password", "credit_card", "ssn")
+
+
+def get_logger() -> logging.Logger:
+    """Return a logging.Logger object named 'user_data'."""
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    # Create a StreamHandler
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(RedactingFormatter(list(PII_FIELDS)))
+
+    logger.addHandler(stream_handler)
+    return logger
+
+
 class RedactingFormatter(logging.Formatter):
     """Redacting Formatter class"""
 
@@ -37,20 +54,3 @@ class RedactingFormatter(logging.Formatter):
             self.fields, self.REDACTION, record.msg, self.SEPARATOR
         )
         return super().format(record)
-
-
-PII_FIELDS = ("username", "email", "password", "credit_card", "ssn")
-
-
-def get_logger() -> logging.Logger:
-    """Return a logging.Logger object named 'user_data'."""
-    logger = logging.getLogger("user_data")
-    logger.setLevel(logging.INFO)
-    logger.propagate = False
-
-    # Create a StreamHandler
-    stream_handler = logging.StreamHandler()
-    stream_handler.setFormatter(RedactingFormatter(list(PII_FIELDS)))
-
-    logger.addHandler(stream_handler)
-    return logger
