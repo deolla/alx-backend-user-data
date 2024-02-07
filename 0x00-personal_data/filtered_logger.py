@@ -5,7 +5,7 @@ Module for storing the filtered_logger function.
 from typing import List
 import re
 import logging
-import os
+from os import environ
 import mysql.connector
 
 
@@ -17,11 +17,7 @@ def filter_datum(
 ) -> str:
     """Returns a log message with PII redacted."""
     for f in fields:
-        message = re.sub(
-            f"{f}=.*?{separator}",
-            f"{f}={redaction}{separator}",
-            message
-        )
+        message = re.sub(f"{f}=.*?{separator}", f"{f}={redaction}{separator}", message)
     return message
 
 
@@ -41,10 +37,10 @@ def get_logger() -> logging.Logger:
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """Returns a connector to a database connection object."""
-    username = os.environ.get("PERSONAL_DATA_DB_USERNAME", "root")
-    password = os.environ.get("PERSONAL_DATA_DB_PASSWORD", "")
-    host = os.environ.get("PERSONAL_DATA_DB_HOST", "localhost")
-    db_name = os.environ.get("PERSONAL_DATA_DB_NAME")
+    username = environ.get("PERSONAL_DATA_DB_USERNAME", "root")
+    password = environ.get("PERSONAL_DATA_DB_PASSWORD", "")
+    host = environ.get("PERSONAL_DATA_DB_HOST", "localhost")
+    db_name = environ.get("PERSONAL_DATA_DB_NAME")
 
     p = mysql.connector.connection.MySQLConnection(
         user=username, password=password, host=host, database=db_name
