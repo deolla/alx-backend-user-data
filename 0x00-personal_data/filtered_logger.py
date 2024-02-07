@@ -27,10 +27,12 @@ class RedactingFormatter(logging.Formatter):
     SEPARATOR = ";"
 
     def __init__(self, fields: List[str]):
+        """Initialize the RedactingFormatter object."""
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
+        """Return the formatted log message."""
         record.msg = filter_datum(
             self.fields, self.REDACTION, record.msg, self.SEPARATOR
         )
@@ -57,7 +59,7 @@ def get_logger() -> logging.Logger:
 
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
-    """Return a connector to the database."""
+    """This method Return a connector to the database."""
     connector = mysql.connector.connect(
         user=os.getenv("PERSONAL_DATA_DB_USERNAME", "root"),
         password=os.getenv("PERSONAL_DATA_DB_PASSWORD", ""),
@@ -68,22 +70,18 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
 
 
 def main():
-    """The main function of the module."""
+    """The main function of the module that retrieves all rows from the users
+    table and display each row under a filtered format"""
     db = get_db()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM users")
     logger = get_logger()
     for row in cursor:
-        logger.info(
-            "name=%s; email=%s; phone=%s; ssn=%s; password=%s; ip=%s; last_login=%s; user_agent=%s",
-            row[0],
-            row[1],
-            row[2],
-            row[3],
-            row[4],
-            row[5],
-            row[6],
-            row[7],
+        message = (
+            f"name={row[0]}; email={row[1]}; phone={row[2]}; "
+            f"ssn={row[3]}; password={row[4]}; ip={row[5]}; "
+            f"last_login={row[6]}; user_agent={row[7]};"
         )
+        logger.info(message)
     cursor.close()
     db.close()
