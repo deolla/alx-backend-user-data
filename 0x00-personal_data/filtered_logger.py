@@ -4,7 +4,6 @@
 from typing import List
 import logging
 import os
-import mysql.connector
 import re
 
 
