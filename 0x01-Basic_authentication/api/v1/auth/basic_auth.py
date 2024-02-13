@@ -7,10 +7,10 @@ from models.user import User
 
 
 class BasicAuth(Auth):
-    """Basic authentication module, inherits from Auth.
+    """Basic authentication module, inherits from Auth."""
 
     def extract_base64_authorization_header(self, authorization_header: str) -> str:
-        # Extracts base64 authorization header.
+        """Extracts base64 authorization header."""
         if authorization_header is None:
             return None
         if type(authorization_header) is not str:
@@ -22,7 +22,7 @@ class BasicAuth(Auth):
     def decode_base64_authorization_header(
         self, base64_authorization_header: str
     ) -> str:
-         # Decodes base64 authorization header.
+        """Decodes base64 authorization header."""
         if base64_authorization_header is None:
             return None
         if type(base64_authorization_header) is not str:
@@ -37,7 +37,7 @@ class BasicAuth(Auth):
     def extract_user_credentials(
         self, decoded_base64_authorization_header: str
     ) -> (str, str):
-        # Extracts user credentials.
+        """Extracts user credentials."""
         if decoded_base64_authorization_header is None:
             return (None, None)
         if type(decoded_base64_authorization_header) is not str:
@@ -49,7 +49,7 @@ class BasicAuth(Auth):
     def user_object_from_credentials(
         self, user_email: str, user_pwd: str
     ) -> TypeVar("User"):
-        # User object from credentials.
+        """User object from credentials."""
         if user_email is None or user_pwd is None:
             return None
         if type(user_email) is not str or type(user_pwd) is not str:
@@ -65,7 +65,7 @@ class BasicAuth(Auth):
         return user
 
     def current_user(self, request=None) -> TypeVar("User"):
-        # Current user.
+        """Current user."""
         auth_header = self.authorization_header(request)
         if auth_header is None:
             return None
@@ -82,4 +82,3 @@ class BasicAuth(Auth):
             user_credentials[0], user_credentials[1]
         )
         return user
-    """
