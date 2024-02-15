@@ -10,8 +10,8 @@ from os import getenv
 @app_views.route("/auth_session/login", methods=["POST"], strict_slashes=False)
 def login():
     """POST /auth_session/login
-    Return
-        - Logged in user
+    Return:
+        - User dictionary
     """
     email = request.form.get("email")
 
@@ -52,13 +52,13 @@ def login():
 def logout():
     """DELETE /auth_session/logout
     Return:
-        - Empty dictionary if succesful
+        - Empty dictionary
     """
     from api.v1.app import auth
 
-    deleted = auth.destroy_session(request)
+    deel = auth.destroy_session(request)
 
-    if not deleted:
+    if not deel:
         abort(404)
 
     return jsonify({}), 200
