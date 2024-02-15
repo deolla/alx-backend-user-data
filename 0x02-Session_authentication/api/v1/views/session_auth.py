@@ -44,6 +44,8 @@ def logout() -> str:
     Return:
       - JSON payload
     """
-    if auth.destroy_session(request):
-        return jsonify({}), 200
-    abort(404)
+    terminated = auth.destroy_session(request)
+    if not terminated:
+        abort(404)
+
+    return jsonify({}), 200
