@@ -40,7 +40,10 @@ class SessionAuth(Auth):
         if session_id is None:
             return False
         user_id = self.user_id_for_session_id(session_id)
-        if user_id is None:
+        if not user_id:
             return False
-        del self.user_id_by_session_id[session_id]
+        try:
+            del self.user_id_by_session_id[session_id]
+        except Exception as e:
+            pass
         return True
