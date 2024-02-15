@@ -36,8 +36,10 @@ def auth_session() -> str:
     return response
 
 
-app_views.route("/auth_session/logout", 
+app_views.route("/auth_session/logout",
                 methods=["DELETE"], strict_slashes=False)
+
+
 def auth_session_logout() -> str:
     """DELETE /auth_session/logout
     Return:
