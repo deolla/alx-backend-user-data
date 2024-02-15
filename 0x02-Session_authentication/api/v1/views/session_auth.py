@@ -36,16 +36,13 @@ def auth_session() -> str:
     return response
 
 
-app_views.route("/auth_session/logout", methods=["DELETE"], strict_slashes=False)
-
-
-def logout() -> str:
+app_views.route("/auth_session/logout", 
+                methods=["DELETE"], strict_slashes=False)
+def auth_session_logout() -> str:
     """DELETE /auth_session/logout
     Return:
       - JSON payload
     """
-    terminated = auth.destroy_session(request)
-    if not terminated:
-        abort(404)
-
-    return jsonify({}), 200
+    if auth.destroy_session(request):
+        return jsonify({}), 200
+    abort(404)
