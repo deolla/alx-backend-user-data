@@ -53,9 +53,7 @@ class DB:
         return user
 
     def update_user(self, user_id: int, **kwargs) -> None:
-        """Update users attributes
-        Returns: None
-        """
+        """Update a user in the database with the given key-value pairs."""
         user = self.find_user_by(id=user_id)
 
         col = User.__table__.columns.keys()
