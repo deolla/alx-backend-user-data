@@ -36,15 +36,13 @@ class DB:
         return user
 
     def find_user_by(self, **kwargs) -> User:
-        """Finds user by key word args
-        Return: First row found in the users table as filtered by kwargs
-        """
+        """Find a user by the key-value pairs in the database."""
         if not kwargs:
             raise InvalidRequestError
 
-        column_names = User.__table__.columns.keys()
+        col = User.__table__.columns.keys()
         for key in kwargs.keys():
-            if key not in column_names:
+            if key not in col:
                 raise InvalidRequestError
 
         user = self._session.query(User).filter_by(**kwargs).first()
@@ -60,9 +58,9 @@ class DB:
         """
         user = self.find_user_by(id=user_id)
 
-        column_names = User.__table__.columns.keys()
+        col = User.__table__.columns.keys()
         for key in kwargs.keys():
-            if key not in column_names:
+            if key not in col:
                 raise ValueError
 
         for key, value in kwargs.items():
