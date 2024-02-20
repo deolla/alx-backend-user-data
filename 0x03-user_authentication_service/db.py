@@ -10,7 +10,7 @@ from user import Base, User
 
 
 class DB:
-    """DB class"""
+    """DB class that will interact with the SQLAlchemy DB"""
 
     def __init__(self) -> None:
         """Initialize a new DB instance"""
@@ -28,8 +28,12 @@ class DB:
         return self.__session
 
     def add_user(self, email: str, hashed_password: str) -> User:
-        """Save the user to the database"""
-        user = User(email=email, hashed_password=hashed_password)
-        self._session.add(user)
-        self._session.commit()
-        return user
+        """Adds a new user to the database."""
+        try:
+            new_user = User(email=email, hashed_password=hashed_password)
+            self._session.add(new_user)
+            self._session.commit()
+        except Exception:
+            self._session.rollback()
+            new_user = None
+        return new_user
